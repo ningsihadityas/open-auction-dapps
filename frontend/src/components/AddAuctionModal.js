@@ -25,10 +25,11 @@ export default function AddAuctionModal({
     const detailAuction = auctionDesc.current.value;
     const durationAuction = auctionDuration.current.value;
     // const depositeOwner = ownerDeposite.current.value;
-    let priceToEth = (startPriceAuction * 4.665454319592892e-8).toFixed(10);
-    let priceToWei = Web3.utils.toWei(priceToEth.toString(), 'ether');
-    // alert(priceToEth);
+    let priceToEth = startPriceAuction * 4;
+    let depositePrice = Web3.utils.toWei(priceToEth.toString(), 'wei');
+    alert(depositePrice);
     // alert(priceToWei);
+    alert(ownerDeposite);
 
     //  console.log(priceToEth);
     //  console.log(priceToWei);
@@ -37,7 +38,7 @@ export default function AddAuctionModal({
       detailAuction,
       startPriceAuction,
       assetOwner,
-      ownerDeposite,
+      depositePrice,
       durationAuction
     ).catch((err) => {
       if (err) {

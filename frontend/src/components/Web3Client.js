@@ -94,9 +94,9 @@ export const getAuctionData = async () => {
   // Load products
   for (var i = 1; i <= auctionCount; i++) {
     const auction = await mainAuctionContract.methods.auctions(i).call();
-    let millis = parseFloat(auction.timestamp) * 1000;
+    //  let millis = parseFloat(auction.timestamp) * 1000;
     let startPrice = web3.utils.fromWei(auction.startPrice.toString(), 'ether');
-    let auction_time = new Date(millis).toLocaleString();
+    //  let auction_time = new Date(millis).toLocaleString();
 
     auctions.push({
       auctionId: auction.auctionId,
@@ -126,6 +126,7 @@ export const createAuction = async (
   const web3 = new Web3(provider);
   // const networkId = await web3.eth.net.getId();
   const networkId = await web3.eth.net.getId();
+  let depositePrice = Web3.utils.toWei(ownerDeposite, 'wei');
 
   mainAuctionContract = new web3.eth.Contract(
     MainAuction.abi,
@@ -133,7 +134,7 @@ export const createAuction = async (
   );
   return mainAuctionContract.methods
     .createAuction(assetName, assetDetail, startPrice, auctionDuration)
-    .send({ from: assetOwner, value: ownerDeposite })
+    .send({ from: assetOwner, value: depositePrice })
     .then((auctionData) => {
       return auctionData;
     })

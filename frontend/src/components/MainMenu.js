@@ -111,6 +111,8 @@ export default function MainMenu({ addr }) {
                   <Card.Text>Asset Owner: {item.assetOwner}</Card.Text>
                   <Card.Text>Contract Address: {item.startPrice}</Card.Text>
                   <Card.Text>Start Price: {item.startPrice}</Card.Text>
+                  <Card.Text>Owner Deposite: {item.ownerDeposite}</Card.Text>
+                  <Card.Text>Deposite Price: {item.depositePrice}</Card.Text>
                   {/* <Button variant='primary'>Go somewhere</Button> */}
                   {/* <Button
                     variant='primary'
