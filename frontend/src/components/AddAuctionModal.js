@@ -4,12 +4,7 @@ import { createAuction } from './Web3Client';
 import SuccessAlertModal from './SuccessAlertModal';
 import Web3 from 'web3';
 
-export default function AddAuctionModal({
-  show,
-  handleClose,
-  assetOwner,
-  ownerDeposite,
-}) {
+export default function AddAuctionModal({ show, handleClose, assetOwner }) {
   let auctionName = useRef();
   let auctionDesc = useRef();
   let auctionStartPrice = useRef();
@@ -19,17 +14,16 @@ export default function AddAuctionModal({
   const [convertETH, setConvertETH] = useState(0);
   let [responseTransaction, setResponseTransaction] = useState({});
 
-  async function handleAddAuction(assetOwner, ownerDeposite) {
+  async function handleAddAuction(assetOwner) {
     const startPriceAuction = auctionStartPrice.current.value;
     const nameAuction = auctionName.current.value;
     const detailAuction = auctionDesc.current.value;
     const durationAuction = auctionDuration.current.value;
     // const depositeOwner = ownerDeposite.current.value;
-    let priceToEth = startPriceAuction * 4;
-    let depositePrice = Web3.utils.toWei(priceToEth.toString(), 'wei');
-    alert(depositePrice);
+    // let priceToEth = startPriceAuction * 4;
+    // let depositePrice = Web3.utils.toWei(priceToEth.toString(), 'wei');
+    // alert(depositePrice);
     // alert(priceToWei);
-    alert(ownerDeposite);
 
     //  console.log(priceToEth);
     //  console.log(priceToWei);
@@ -38,7 +32,7 @@ export default function AddAuctionModal({
       detailAuction,
       startPriceAuction,
       assetOwner,
-      depositePrice,
+      //  depositePrice,
       durationAuction
     ).catch((err) => {
       if (err) {
@@ -86,7 +80,7 @@ export default function AddAuctionModal({
                 ref={auctionDesc}
               />
             </Form.Group>
-            <Form.Group className='mb-3' controlId='auction_desc'>
+            {/* <Form.Group className='mb-3' controlId='auction_desc'>
               <Form.Label>Submit Deposite</Form.Label>
               <Form.Control
                 type='number'
@@ -94,7 +88,7 @@ export default function AddAuctionModal({
                 autoFocus
                 ref={ownerDeposite}
               />
-            </Form.Group>
+            </Form.Group> */}
             <Form.Group className='mb-3' controlId='auction_desc'>
               <Form.Label>Auction Duration</Form.Label>
               <Form.Control
@@ -105,7 +99,7 @@ export default function AddAuctionModal({
               />
             </Form.Group>
             <Form.Group className='mb-3' controlId='auction_start_price'>
-              <Form.Label>Product Start Price</Form.Label>
+              <Form.Label>Auction Start Price</Form.Label>
               <div className='input-group'>
                 <div className='input-group-append'>
                   <span className='input-group-text'>IDR</span>

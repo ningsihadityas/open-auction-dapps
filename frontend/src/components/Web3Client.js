@@ -104,7 +104,7 @@ export const getAuctionData = async () => {
       assetDetail: auction.assetDetail,
       startPrice: startPrice,
       assetOwner: auction.assetOwner,
-      ownerDeposite: auction.ownerDeposite,
+      //ownerDeposite: auction.ownerDeposite,
       auctionDuration: auction.auctionDuration,
       // bidding: auction.biddingList,
     });
@@ -118,7 +118,7 @@ export const createAuction = async (
   assetDetail,
   startPrice,
   assetOwner,
-  ownerDeposite,
+  // ownerDeposite,
   auctionDuration
 ) => {
   let provider = window.ethereum;
@@ -126,7 +126,7 @@ export const createAuction = async (
   const web3 = new Web3(provider);
   // const networkId = await web3.eth.net.getId();
   const networkId = await web3.eth.net.getId();
-  let depositePrice = Web3.utils.toWei(ownerDeposite, 'wei');
+  let depositePrice = Web3.utils.toWei(startPrice, 'ether');
 
   mainAuctionContract = new web3.eth.Contract(
     MainAuction.abi,
