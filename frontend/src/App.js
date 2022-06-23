@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { init } from './components/Web3Client';
 import NavbarHome from './components/NavbarHome';
 import MainMenu from './components/MainMenu';
+import Home from './components/home';
 
 function App() {
   let [AddressEth, setAddressEth] = useState('loading...');
@@ -15,7 +16,8 @@ function App() {
 
   return (
     <div className='App'>
-      <NavbarHome addr={AddressEth} />
+      {/* <NavbarHome addr={AddressEth} />*/}
+      <Home addr={AddressEth} />
       <MainMenu addr={AddressEth} />
     </div>
   );

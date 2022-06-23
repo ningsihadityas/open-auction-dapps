@@ -1,6 +1,7 @@
 import Web3 from 'web3';
 // import Marketplace from 'contracts/Marketplace.json';
 import MainAuction from 'contracts/MainAuction.json';
+import BiddingContract from 'contracts/Bidding.json';
 
 // import MainAuction from 'contracts/jajaja.json';
 

@@ -1,0 +1,4 @@
+.auction-image {
+  display: flex;
+  flex-direction: column;
+}

@@ -47,12 +47,12 @@ export default function AddAuctionModal({ show, handleClose, assetOwner }) {
     return auctionData;
   }
 
-  function handleChangeConversion(event) {
-    event.preventDefault();
-    let idrValue = event.target.value;
-    let ethValue = idrValue * 4.665454319592892e-8;
-    return setConvertETH(ethValue);
-  }
+  // function handleChangeConversion(event) {
+  //   event.preventDefault();
+  //   let idrValue = event.target.value;
+  //   let ethValue = idrValue * 4.665454319592892e-8;
+  //   return setConvertETH(ethValue);
+  // }
 
   return (
     <>
@@ -102,20 +102,20 @@ export default function AddAuctionModal({ show, handleClose, assetOwner }) {
               <Form.Label>Auction Start Price</Form.Label>
               <div className='input-group'>
                 <div className='input-group-append'>
-                  <span className='input-group-text'>IDR</span>
+                  <span className='input-group-text'>ETH</span>
                 </div>
                 <input
                   className='form-control'
                   type='number'
-                  placeholder='Amount in Rp.'
-                  min={0}
-                  ref={auctionStartPrice}
-                  onChange={(e) => handleChangeConversion(e)}
+                  placeholder='Amount in ETH'
+                  // min={0}
+                  // ref={auctionStartPrice}
+                  // onChange={(e) => handleChangeConversion(e)}
                 />
               </div>
             </Form.Group>
           </Form>
-          <div className='input-group'>
+          {/* <div className='input-group'>
             <div className='input-group-append'>
               <span className='input-group-text'>ETH(Estimated)</span>
             </div>
@@ -126,7 +126,7 @@ export default function AddAuctionModal({ show, handleClose, assetOwner }) {
               value={convertETH || 0}
               readOnly
             />
-          </div>
+          </div> */}
         </Modal.Body>
         <Modal.Footer>
           <Button variant='secondary' onClick={handleClose}>
@@ -144,7 +144,7 @@ export default function AddAuctionModal({ show, handleClose, assetOwner }) {
         show={showAlertSuccess}
         handleClose={() => {
           setShowAlertSuccess(false);
-          //window.location.reload();
+          window.location.reload();
         }}
         transaction={responseTransaction}
       />

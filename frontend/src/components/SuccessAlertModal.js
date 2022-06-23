@@ -12,15 +12,19 @@ export default function SuccessAlertModal({ show, handleClose, transaction }) {
         <Modal
           show={show}
           onHide={handleClose}
-          size='lg'
+          size='auto'
           aria-labelledby='contained-modal-title-vcenter'
           centered>
           <Modal.Header closeButton>
-            <Modal.Title className='ms-auto' id='contained-modal-title-vcenter'>
-              Transaction Success
-            </Modal.Title>
+            {
+              <Modal.Title
+                className='ms-auto'
+                id='contained-modal-title-vcenter'>
+                Transaction Success!
+              </Modal.Title>
+            }
           </Modal.Header>
-          <Modal.Body>
+          {/* <Modal.Body closeButton>
             <b>
               Transaction has been successfully created. Transaction detail:{' '}
             </b>{' '}
@@ -30,12 +34,17 @@ export default function SuccessAlertModal({ show, handleClose, transaction }) {
               <br />
               <li>Asset Owner: {transaction.from}</li>
             </ul>
+          </Modal.Body> */}
+          <Modal.Body closeButton>
+            <b>Your Asset is on Listing!</b>
+            <br />
           </Modal.Body>
+          {/* 
           <Modal.Footer>
             <Button variant='success' onClick={handleClose}>
               Done
             </Button>
-          </Modal.Footer>
+          </Modal.Footer> */}
         </Modal>
       </>
     );
