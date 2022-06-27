@@ -17,6 +17,8 @@ contract Bidding  {
 
     uint startPrice;
 
+    string shippingDetail;
+
     uint auctionDuration;
     uint ownerDeposit;
 
@@ -63,8 +65,7 @@ contract Bidding  {
         // isActive = _isActive;
     }
 
-
-    function bid() public payable{
+function bid() public payable{
         // check if the auction is still going
         if (block.timestamp > auctionDuration) {
             revert("The acution has already ended"); // revert is neded to stop the function(same as required)
@@ -100,7 +101,7 @@ contract Bidding  {
     }
 
      function getOwnerDeposite() public view returns(uint){
-        return ownerDeposit;
+        return startPrice;
     }
 
    
@@ -125,10 +126,38 @@ contract Bidding  {
 
     }
 
-    function auctionEnd() public onlyWinner{
+    // stored shipping detail
+    function submitShippingDetail(string memory _shippingDetail) public  {
+         // check if the auction has ended
+        if (block.timestamp < auctionDuration){
+            revert ("The auction is not ended yet");
+        }
+
+        if (msg.sender != highestBidder){
+            revert("you are not the winner of this auction");
+        }
+
+        shippingDetail = _shippingDetail;
+    }
+
+    // return value of shipping detail
+    function getShippingDetail() public view returns (string memory){
+
+         if (msg.sender != assetOwner){
+            revert("you are not the asset owner of this auction");
+        }
+
+        return shippingDetail;
+    }
+
+    function auctionEnd() public {
         // check if the auction has ended
         if (block.timestamp < auctionDuration){
             revert ("The auction is not ended yet");
+        }
+
+         if (msg.sender != highestBidder){
+            revert("you are not the winner of this auction");
         }
        
         // make sure the status of the auction
@@ -136,30 +165,18 @@ contract Bidding  {
             revert("The function auctionEnded has already been called");
         }
 
+        
+
         auctionState = State.Ended;
 
         // isActive = false;
 
         emit AuctionEnded(highestBidder, highestBid);
 
-        payable(assetOwner).transfer(ownerDeposit);
+        payable(assetOwner).transfer(startPrice);
         payable(assetOwner).transfer(highestBid);
         // transfer is more safe then send, send will return false when it fails, while transfer didnt
 
-    }
-
-     function returnContents() public view returns(        
-        string memory,
-        uint,
-        string memory,
-        State
-        ) {
-        return (
-            assetName,
-            startPrice,
-            assetDetail,
-            auctionState
-        );
     }
 
     // event BidSuccess(address _bidder, uint _auctionId);
