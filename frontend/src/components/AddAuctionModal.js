@@ -19,14 +19,7 @@ export default function AddAuctionModal({ show, handleClose, assetOwner }) {
     const nameAuction = auctionName.current.value;
     const detailAuction = auctionDesc.current.value;
     const durationAuction = auctionDuration.current.value;
-    // const depositeOwner = ownerDeposite.current.value;
-    // let priceToEth = startPriceAuction * 4;
-    // let depositePrice = Web3.utils.toWei(priceToEth.toString(), 'wei');
-    // alert(depositePrice);
-    // alert(priceToWei);
 
-    //  console.log(priceToEth);
-    //  console.log(priceToWei);
     let auctionData = await createAuction(
       nameAuction,
       detailAuction,
@@ -46,13 +39,6 @@ export default function AddAuctionModal({ show, handleClose, assetOwner }) {
     setResponseTransaction(auctionData);
     return auctionData;
   }
-
-  // function handleChangeConversion(event) {
-  //   event.preventDefault();
-  //   let idrValue = event.target.value;
-  //   let ethValue = idrValue * 4.665454319592892e-8;
-  //   return setConvertETH(ethValue);
-  // }
 
   return (
     <>
@@ -108,25 +94,12 @@ export default function AddAuctionModal({ show, handleClose, assetOwner }) {
                   className='form-control'
                   type='number'
                   placeholder='Amount in ETH'
-                  // min={0}
-                  // ref={auctionStartPrice}
-                  // onChange={(e) => handleChangeConversion(e)}
+                  min={0}
+                  ref={auctionStartPrice}
                 />
               </div>
             </Form.Group>
           </Form>
-          {/* <div className='input-group'>
-            <div className='input-group-append'>
-              <span className='input-group-text'>ETH(Estimated)</span>
-            </div>
-            <input
-              className='form-control'
-              type='number'
-              placeholder='Please input IDR value'
-              value={convertETH || 0}
-              readOnly
-            />
-          </div> */}
         </Modal.Body>
         <Modal.Footer>
           <Button variant='secondary' onClick={handleClose}>

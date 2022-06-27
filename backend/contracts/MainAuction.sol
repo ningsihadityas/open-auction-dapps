@@ -142,6 +142,8 @@ contract MainAuction{
 
      function createAuction( string memory _assetName, string memory _assetDetail, uint _startPrice, uint _auctionDuration) public payable {
        
+       //increment id
+        auctionCount ++;  
         
        // auctions[auctionCount] = Auction(auctionCount, _assetName, _assetDetail, _startPrice, msg.sender);
         
@@ -161,8 +163,7 @@ contract MainAuction{
         emit AuctionCreated(auctionCount, _assetName, _assetDetail, _startPrice, msg.sender, msg.value, (block.timestamp + (_auctionDuration*60)));
         
         
-        //increment id
-        auctionCount ++;  
+        
     }
 
     function returnAllAuctions() public view returns(Bidding[] memory){

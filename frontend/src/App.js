@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { init } from './components/Web3Client';
-import NavbarHome from './components/NavbarHome';
 import MainMenu from './components/MainMenu';
 import Home from './components/home';
 
@@ -16,7 +15,6 @@ function App() {
 
   return (
     <div className='App'>
-      {/* <NavbarHome addr={AddressEth} />*/}
       <Home addr={AddressEth} />
       <MainMenu addr={AddressEth} />
     </div>

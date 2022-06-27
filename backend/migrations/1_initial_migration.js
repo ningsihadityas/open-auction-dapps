@@ -12,15 +12,14 @@ module.exports = function (deployer) {
   let auctionDuration;
 
   deployer.deploy(MainAuction);
-  //deployer.deploy(Bidding);
-  // deployer.deploy(
-  //   Bidding,
-  //   auctionId,
-  //   assetName,
-  //   assetDetail,
-  //   startPrice,
-  //   assetOwner,
-  //   ownerDeposite,
-  //   auctionDuration
-  // );
+  deployer.deploy(
+    Bidding,
+    auctionId,
+    assetName,
+    assetDetail,
+    startPrice,
+    assetOwner,
+    ownerDeposite,
+    auctionDuration
+  );
 };
