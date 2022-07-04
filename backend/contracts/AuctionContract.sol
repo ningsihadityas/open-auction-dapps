@@ -25,8 +25,9 @@ contract AuctionContract {
 
     // Bid struct to hold bidder and amount
     struct Bid {
+
         address bidder;
-        uint256 amount;
+        uint amount;
     }
 
     string shippingDetail;
@@ -36,10 +37,10 @@ contract AuctionContract {
         uint id;
         string assetName;
         string assetDetail;
-        uint256 startPrice;
+        uint startPrice;
         address assetOwner;
         uint ownerDeposit;
-        uint256 auctionDuration;
+        uint auctionDuration;
         bool active;
     }
 
@@ -158,7 +159,7 @@ contract AuctionContract {
           
     }
 
-    function bidOnAuction(uint _auctionId) public payable {
+    function bidOnAuction(uint _auctionId, uint _bidAmount) public payable {
         uint256 ethAmountSent = msg.value;
 
         // owner can't bid on their auctions
@@ -183,11 +184,9 @@ contract AuctionContract {
             revert("There is already higher bid");
         }
 
-
-        // insert bid 
         Bid memory newBid;
         newBid.bidder = msg.sender;
-        newBid.amount = ethAmountSent;
+        newBid.amount = msg.value;
 
          //funds mapping so the user can get his money back when he lost
         if (newBid.amount != 0){

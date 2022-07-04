@@ -75,8 +75,8 @@ export const getAuctionData = async () => {
 export const createAuction = async (
   assetName,
   assetDetail,
-  startPrice,
   assetOwner,
+  startPrice,
   // ownerDeposite,
   auctionDuration
 ) => {
@@ -87,6 +87,9 @@ export const createAuction = async (
   // const networkId = await web3.eth.net.getId();
   const networkId = await web3.eth.net.getId();
   let depositePrice = Web3.utils.fromWei(startPrice, 'wei');
+
+  //var depositPrice = document.getElementById('deposit_value').value;
+  //depositPrice = web3.toWei(depositPrice, 'ether');
 
   auctionContract = new web3.eth.Contract(
     AuctionContract.abi,
@@ -142,25 +145,72 @@ export const createAuction = async (
 //   return biddingList;
 // };
 
-export const bid = async (highestBidder, highestBid) => {
-  let provider = window.ethereum;
-  let biddingContract;
-  const web3 = new Web3(provider);
-  // const networkId = await web3.eth.net.getId();
-  const networkId = await web3.eth.net.getId();
-  // let highestBid2 = Web3.utils.fromWei(highestBid, 'wei');
+// export const bidOnAuction = async (auctionId, bidder, amount) => {
+//   let provider = window.ethereum;
+//   let auctionContract;
+//   const web3 = new Web3(provider);
+//   // const networkId = await web3.eth.net.getId();
+//   const networkId = await web3.eth.net.getId();
+//   let amount2 = Web3.utils.fromWei(amount, 'wei');
 
-  biddingContract = new web3.eth.Contract(
-    BiddingContract.abi,
-    BiddingContract.networks[networkId].address
+//   auctionContract = new web3.eth.Contract(
+//     AuctionContract.abi,
+//     AuctionContract.networks[networkId].address
+//   );
+//   return AuctionContract.methods
+//     .bidOnAuction(auctionId)
+//     .send({ from: bidder, value: amount2 })
+//     .then((bidData) => {
+//       return bidData;
+//     })
+//     .catch((err) => {
+//       return err.message;
+//     });
+// };
+
+export const bidOnAuction = async (auctionId) => {
+  var auctions = [];
+  var bidder;
+  let auctionContract;
+
+  let provider = window.ethereum;
+  const web3 = new Web3(provider);
+  const networkId = await web3.eth.net.getId();
+  let bid = Web3.utils.fromWei(bidAmount, 'wei');
+
+  // if (bid < auction['tempAmount']) {
+  //   console.log('Bid has to be at least ' + auction['tempAmount'], 'error');
+  //   return;
+  // }
+
+  auctionContract = new web3.eth.Contract(
+    AuctionContract.abi,
+    AuctionContract.networks[networkId].address
   );
-  return biddingContract.methods
-    .bid()
-    .send({ from: highestBidder, value: highestBid })
+
+  return auctionContract.methods
+    .bidOnAuction(auctions[auctionId])
+    .send({ from: bidder, value: bid })
     .then((bidData) => {
       return bidData;
     })
     .catch((err) => {
       return err.message;
     });
+
+  // .then(function (txnId) {
+  //   console.log('Bid txnId: ' + txnId);
+  //   web3.eth.getTransactionReceipt(txnId, function (err, txnReceipt) {
+  //     if (txnReceipt.gasUsed == gas) {
+  //       console.log('We had a failed bid ' + txnReceipt);
+  //       setStatus('Bid failed', 'error');
+  //       hideSpinner();
+  //     } else {
+  //       console.log('We had a successful bid ' + txnReceipt);
+  //       setStatus('Bid succeeded!', 'success');
+  //       hideSpinner();
+  //     }
+  //   });
+  //   refreshAuction();
+  // });
 };

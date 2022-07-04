@@ -10,7 +10,30 @@ import {
   Form,
 } from 'react-bootstrap';
 import SuccessAlertModal from './SuccessAlertModal';
-import { bid, getAuctionData } from './Web3Client';
+import { bidOnAuction, getAuctionData } from './Web3Client';
+import Web3 from 'web3';
+
+// function bidOnAuction() {
+//   let provider = window.ethereum;
+//   // let mainAuctionContract;
+//   let auctionContract;
+//   const web3 = new Web3(provider);
+
+//   var bid = document.getElementById('bid_value').value;
+//   bid = web3.toWei(bid, 'ether');
+
+//   // var gas = 1400000;
+
+//   auctionContract = new web3.eth.Contract(
+//     AuctionContract.abi,
+//     AuctionContract.networks[networkId].address
+//   );
+
+//   auctionContract.bidOnAuction(auction['auctionId'], {
+//     from: account,
+//     value: bid,
+//   });
+// }
 
 export default function MainMenu({ addr, highestBidder, highestBid }) {
   //let highestBid2 = useRef();
@@ -21,6 +44,8 @@ export default function MainMenu({ addr, highestBidder, highestBid }) {
   let [transactionData, setTransactionData] = useState({});
   const [showAlertSuccess, setShowAlertSuccess] = useState(false);
 
+  let auctionAmount = useRef();
+
   async function getListingData() {
     let auctions = await getAuctionData();
     let reversed = auctions.reverse();
@@ -28,14 +53,21 @@ export default function MainMenu({ addr, highestBidder, highestBid }) {
     setAuctionData(reversed);
   }
 
-  async function handleAddBid(highestBidder) {
-    let bidData = await bid(highestBidder, highestBid).catch((err) => {
-      if (err) {
-        // alert(err);
-        console.log(err);
-        // window.location.reload();
-      }
-    });
+  async function handleAddBid(bidder) {
+    let auctions = [];
+    let amountAuction = auctionAmount.current.value;
+    let bidToEth = Number(amountAuction).toFixed(18);
+    let bidToWei = Web3.utils.toWei(bidToEth.toString(), 'ether');
+
+    let bidData = await bidOnAuction(auctions['auctionId'])
+      .then({ value: bidToWei })
+      .catch((err) => {
+        if (err) {
+          // alert(err);
+          console.log(err);
+          // window.location.reload();
+        }
+      });
     return bidData;
   }
   // async function getBiddingListData() {
@@ -92,12 +124,12 @@ export default function MainMenu({ addr, highestBidder, highestBid }) {
                       paddingBottom: '30px',
                     }}>
                     <Form onSubmit={handleAddBid}>
-                      <Form.Group className='mb-3' controlId='bid'>
+                      <Form.Group className='mb-3' controlId='auction_amount'>
                         <Form.Control
                           type='number'
                           className='me-auto'
                           placeholder='Place Your Bid'
-                          ref={highestBid}
+                          ref={auctionAmount}
                         />
                       </Form.Group>
                     </Form>

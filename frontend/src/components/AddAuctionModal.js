@@ -20,20 +20,25 @@ export default function AddAuctionModal({ show, handleClose, assetOwner }) {
     const detailAuction = auctionDesc.current.value;
     const durationAuction = auctionDuration.current.value;
 
+    let priceToEth = Number(startPriceAuction).toFixed(18);
+    let priceToWei = Web3.utils.toWei(priceToEth.toString(), 'ether');
+
     let auctionData = await createAuction(
       nameAuction,
       detailAuction,
-      startPriceAuction,
       assetOwner,
+      priceToWei,
       //  depositePrice,
       durationAuction
-    ).catch((err) => {
-      if (err) {
-        // alert(err);
-        console.log(err);
-        // window.location.reload();
-      }
-    });
+    )
+      .then({ value: priceToWei })
+      .catch((err) => {
+        if (err) {
+          // alert(err);
+          console.log(err);
+          // window.location.reload();
+        }
+      });
     handleClose();
     setShowAlertSuccess(true);
     setResponseTransaction(auctionData);
