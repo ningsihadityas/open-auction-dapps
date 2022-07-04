@@ -56,7 +56,7 @@ export const getAuctionData = async () => {
       assetOwner: auction.assetOwner,
       //ownerDeposite: auction.ownerDeposite,
       auctionDuration: auction.auctionDuration,
-      // bidding: auction.biddingList,
+      bidding: auction.bidding,
     });
   }
   return auctions;
@@ -76,7 +76,7 @@ export const createAuction = async (
   const web3 = new Web3(provider);
   // const networkId = await web3.eth.net.getId();
   const networkId = await web3.eth.net.getId();
-  let depositePrice = Web3.utils.fromWei(startPrice, 'wei');
+  let depositePrice = Web3.utils.toWei(startPrice, 'ether');
 
   mainAuctionContract = new web3.eth.Contract(
     MainAuction.abi,
@@ -87,6 +87,29 @@ export const createAuction = async (
     .send({ from: assetOwner, value: depositePrice })
     .then((auctionData) => {
       return auctionData;
+    })
+    .catch((err) => {
+      return err.message;
+    });
+};
+
+export const bid = async (highestBid, highestBidder) => {
+  let provider = window.ethereum;
+  let biddingContract;
+  const web3 = new Web3(provider);
+  // const networkId = await web3.eth.net.getId();
+  const networkId = await web3.eth.net.getId();
+  let amount2 = Web3.utils.toWei(highestBid, 'wei');
+
+  biddingContract = new web3.eth.Contract(
+    BiddingContract.abi,
+    BiddingContract.networks[networkId].address
+  );
+  return BiddingContract.methods
+    .bid()
+    .send({ from: highestBidder, value: amount2 })
+    .then((bidData) => {
+      return bidData;
     })
     .catch((err) => {
       return err.message;

@@ -82,10 +82,13 @@ import "./Bidding.sol";
    
 // }
 
+
+
 contract MainAuction{
     uint public auctionCount = 0;
     address payable assetOwner;
     uint assetId;
+    uint256 constant maxLimit = 20;
  
     // enum State {NotStarted, Running, Ended}
 
@@ -97,6 +100,7 @@ contract MainAuction{
         address assetOwner;
         uint ownerDeposit;
         uint auctionDuration;
+        Bidding bidding;
 
         // bool purchased;
         // uint256 auctionDuration;
@@ -120,7 +124,9 @@ contract MainAuction{
         uint startPrice,
         address assetOwner,
         uint ownerDeposit,
-        uint auctionDuration 
+        uint auctionDuration, 
+        Bidding indexed bidding
+
     );
 
     
@@ -128,7 +134,7 @@ contract MainAuction{
         // stored all Auction data in arrray
         // Auction[] public auctions;
 
-        Bidding[] public biddingList;
+        Bidding[] public _biddings;
         // address bidding;
 
 
@@ -151,24 +157,42 @@ contract MainAuction{
         //create new contract
         Bidding bidding = (new Bidding){value: msg.value}(auctionCount, _assetName, _assetDetail, _startPrice, msg.sender, msg.value, (block.timestamp + (_auctionDuration*60)));
         // saving address of new contract to bidding array
-        biddingList.push(bidding); 
+        _biddings.push(bidding); 
+
+        
 
         
 
         //stored value to auctions struct
-        auctions[auctionCount] = Auction(auctionCount, _assetName, _assetDetail, _startPrice, msg.sender, msg.value, (block.timestamp + (_auctionDuration*60)));     
+        auctions[auctionCount] = Auction(auctionCount, _assetName, _assetDetail, _startPrice, msg.sender, msg.value, (block.timestamp + (_auctionDuration*60)), bidding );     
         // *60 because block.timestamp are on seconds 
         
         //calling auction created event 
-        emit AuctionCreated(auctionCount, _assetName, _assetDetail, _startPrice, msg.sender, msg.value, (block.timestamp + (_auctionDuration*60)));
+        emit AuctionCreated(auctionCount, _assetName, _assetDetail, _startPrice, msg.sender, msg.value, (block.timestamp + (_auctionDuration*60)), bidding);
         
         
         
+    }
+
+     function biddingsCount () public view returns (uint256) {
+        return _biddings.length;
     }
 
     function returnAllAuctions() public view returns(Bidding[] memory){
-        return biddingList;
+        return _biddings;
     }
 
-   
+    function biddings (uint256 limit, uint256 offset) public view returns (Bidding[] memory coll) {    
+        require (offset <= biddingsCount(), "offset out of bounds");
+        uint256 size = biddingsCount() - offset;
+        size = size < limit ? size : limit;
+        size = size < maxLimit ? size : maxLimit;
+        coll = new Bidding[](size);
+
+        for (uint256 i = 0; i < size; i++) {
+            coll[i] = _biddings[offset + i];
+        }
+
+        return coll;    
+    }
 }
