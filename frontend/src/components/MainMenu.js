@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   Container,
   Table,
@@ -10,12 +10,14 @@ import {
   Form,
 } from 'react-bootstrap';
 import SuccessAlertModal from './SuccessAlertModal';
-import { getAuctionData } from './Web3Client';
+import { bid, getAuctionData } from './Web3Client';
 
-export default function MainMenu({ addr }) {
+export default function MainMenu({ addr, highestBidder, highestBid }) {
+  //let highestBid2 = useRef();
   //   let [productData, setProductData] = useState([]);
   let [auctionData, setAuctionData] = useState([]);
-
+  let [bidData, setBidData] = useState([]);
+  // let [biddingListData, setBiddingList] = useState();
   let [transactionData, setTransactionData] = useState({});
   const [showAlertSuccess, setShowAlertSuccess] = useState(false);
 
@@ -26,11 +28,30 @@ export default function MainMenu({ addr }) {
     setAuctionData(reversed);
   }
 
+  async function handleAddBid(highestBidder) {
+    let bidData = await bid(highestBidder, highestBid).catch((err) => {
+      if (err) {
+        // alert(err);
+        console.log(err);
+        // window.location.reload();
+      }
+    });
+    return bidData;
+  }
+  // async function getBiddingListData() {
+  //   let biddingList = await biddingList();
+
+  //   setBiddingList(biddingList);
+  // }
+
   useEffect(() => {
     getListingData(); // getTableData
+    // getBiddingListData();
   }, []);
 
   console.log(auctionData);
+  console.log('bid data:' + bidData);
+  // console.log('bidding id :' + biddingListData);
 
   return (
     <Container
@@ -70,12 +91,28 @@ export default function MainMenu({ addr }) {
                       paddingTop: '5px',
                       paddingBottom: '30px',
                     }}>
-                    <Form.Control
+                    <Form onSubmit={handleAddBid}>
+                      <Form.Group className='mb-3' controlId='bid'>
+                        <Form.Control
+                          type='number'
+                          className='me-auto'
+                          placeholder='Place Your Bid'
+                          ref={highestBid}
+                        />
+                      </Form.Group>
+                    </Form>
+
+                    {/* <Form.Control
                       type='number'
                       className='me-auto'
                       placeholder='Place Your Bid'
-                    />
-                    <Button variant='warning'>Bid</Button>
+                    /> */}
+                    <Button
+                      variant='warning'
+                      onClick={() => handleAddBid(highestBidder)}>
+                      Bid
+                    </Button>
+                    <p>{bidData}</p>
                   </Stack>
                   <Stack direction='horizontal' gap={3}>
                     <Button variant='danger'>Finalize Auction</Button>

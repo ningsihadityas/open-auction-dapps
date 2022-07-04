@@ -11,7 +11,7 @@ export default function AddAuctionModal({ show, handleClose, assetOwner }) {
   let auctionDuration = useRef();
   //let ownerDeposite = useRef();
   const [showAlertSuccess, setShowAlertSuccess] = useState(false);
-  const [convertETH, setConvertETH] = useState(0);
+  //const [convertETH, setConvertETH] = useState(0);
   let [responseTransaction, setResponseTransaction] = useState({});
 
   async function handleAddAuction(assetOwner) {
