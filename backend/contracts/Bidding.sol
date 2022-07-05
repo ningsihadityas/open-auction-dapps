@@ -4,13 +4,19 @@ pragma solidity >=0.4.22 ^0.8.9;
 
 contract Bidding  {
 
+   uint bidCount = 0;
    // variable decralred
     address payable public assetOwner; 
     string public assetName;
     string public assetDetail;
     bool public isActive;
     uint auctionId;
- 
+    
+    struct Bid {
+        uint256 value;
+        address bidder;
+    }
+    mapping (address => Bid[]) private _bids;
 
     enum State{NotStarted, Running, Ended}
     State public auctionState;
@@ -65,35 +71,50 @@ contract Bidding  {
         // isActive = _isActive;
     }
 
-function bid() public payable{
-        // check if the auction is still going
-        if (block.timestamp > auctionDuration) {
-            revert("The acution has already ended"); // revert is neded to stop the function(same as required)
-        }
-        // check if the bidding is higher than the start price
-        if (msg.value <= startPrice ){
-            revert("This bidding is bellow the start price");
-        }
-        // check if the bidding is higher than before
-        if (msg.value <= highestBid ){
-            revert("There is already higher bid");
-        }
+function placeBid() public payable returns(uint256[] memory values,  address[] memory bidders){
+        uint256 count = myBidsCount();
+        values = new uint256[](count);
+        bidders = new address[](count);
 
-        // the owner can't join the bidding
-        if (msg.sender == assetOwner){
-            revert("you can't join the bidding");
+        for (uint256 i = 0; i < count; i++) {
+
+            bidCount++;
+                // check if the auction is still going
+            if (block.timestamp > auctionDuration) {
+                revert("The acution has already ended"); // revert is neded to stop the function(same as required)
+            }
+            // check if the bidding is higher than the start price
+            if (msg.value <= startPrice ){
+                revert("This bidding is bellow the start price");
+            }
+            // check if the bidding is higher than before
+            if (msg.value <= highestBid ){
+                revert("There is already higher bid");
+            }
+
+            // the owner can't join the bidding
+            if (msg.sender == assetOwner){
+                revert("you can't join the bidding");
+            }
+
+            //funds mapping so the user can get his money back when he lost
+            if (highestBid != 0){
+                pendingReturns[highestBidder] += highestBid;
+            }
+
+
+            Bid storage bid = _bids[msg.sender][i];
+            values[i] = bid.value;
+            bidders[i] = bid.bidder;
+
+            highestBidder = msg.sender;
+            highestBid = msg.value;
+
+            //calling event
+            emit HighestBidIncrease(msg.sender, msg.value);
         }
-
-        //funds mapping so the user can get his money back when he lost
-        if (highestBid != 0){
-            pendingReturns[highestBidder] += highestBid;
-        }
-
-        highestBidder = msg.sender;
-        highestBid = msg.value;
-
-        //calling event
-        emit HighestBidIncrease(msg.sender, msg.value);
+        return (values,  bidders);
+     
     }
 
      function getBalance() public view returns(uint){
@@ -104,6 +125,9 @@ function bid() public payable{
         return startPrice;
     }
 
+    function myBidsCount () public view returns (uint256) {
+        return _bids[msg.sender].length;
+    }
    
 
     function withdraw() public returns(bool){

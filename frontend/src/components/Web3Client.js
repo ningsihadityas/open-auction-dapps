@@ -63,6 +63,35 @@ export const getAuctionData = async () => {
   // return mainAuctionContract.methods.auctions(1);
 };
 
+export const getBidData = async () => {
+  let provider = window.ethereum;
+  let biddingContract; // marketContract
+  const web3 = new Web3(provider);
+  const networkId = await web3.eth.net.getId();
+  let bids = [];
+
+  biddingContract = new web3.eth.Contract(
+    BiddingContract.abi,
+    BiddingContract.networks[networkId].address
+  );
+
+  let bidCount = await biddingContract.methods.myBidsCount().call();
+  // Load products
+  for (var i = 1; i <= bidCount; i++) {
+    const bid = await biddingContract.methods.bids(i).call();
+    //  let millis = parseFloat(auction.timestamp) * 1000;
+    //let startPrice = web3.utils.fromWei(auction.startPrice.toString(), 'ether');
+    //  let auction_time = new Date(millis).toLocaleString();
+
+    bids.push({
+      amount: bid.value,
+      bidder: bid.bidder,
+    });
+  }
+  return bids;
+  // return mainAuctionContract.methods.auctions(1);
+};
+
 export const createAuction = async (
   assetName,
   assetDetail,
@@ -93,21 +122,39 @@ export const createAuction = async (
     });
 };
 
-export const bid = async (highestBid, highestBidder) => {
+export const placeBid = async () => {
   let provider = window.ethereum;
   let biddingContract;
   const web3 = new Web3(provider);
   // const networkId = await web3.eth.net.getId();
   const networkId = await web3.eth.net.getId();
-  let amount2 = Web3.utils.toWei(highestBid, 'wei');
 
   biddingContract = new web3.eth.Contract(
     BiddingContract.abi,
     BiddingContract.networks[networkId].address
   );
-  return BiddingContract.methods
-    .bid()
-    .send({ from: highestBidder, value: amount2 })
+
+  let mainAuctionContract;
+  mainAuctionContract = new web3.eth.Contract(
+    MainAuction.abi,
+    MainAuction.networks[networkId].address
+  );
+
+  const bidding = await mainAuctionContract.methods.bidding().call(1);
+  const highestBid = await biddingContract.methods.highestBid().call();
+  let amount2 = Web3.utils.toWei(highestBid, 'wei');
+  const bidder = await biddingContract.methods.highestBidder().call();
+  // const startPrice = await biddingContract.methods.startPrice().call();
+  //const auctionDuration = await biddingContract.methods
+  // .auctionDuration()
+  // .call();
+  //const assetName = await biddingContract.methods.assetName().call();
+  //const assetDetail = await biddingContract.methods.assetDetail().call();
+  //const assetOwner = await biddingContract.methods.assetOwner().call();
+
+  return biddingContract.methods
+    .placeBid()
+    .send({ from: bidder, value: amount2, to: bidding[1] })
     .then((bidData) => {
       return bidData;
     })
