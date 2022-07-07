@@ -170,23 +170,24 @@ export const createAuction = async (
 
 export const bidOnAuction = async (auctionId) => {
   var auctions = [];
-  var bidder;
   let auctionContract;
-
   let provider = window.ethereum;
   const web3 = new Web3(provider);
   const networkId = await web3.eth.net.getId();
-  let bid = Web3.utils.fromWei(bidAmount, 'wei');
-
-  // if (bid < auction['tempAmount']) {
-  //   console.log('Bid has to be at least ' + auction['tempAmount'], 'error');
-  //   return;
-  // }
 
   auctionContract = new web3.eth.Contract(
     AuctionContract.abi,
     AuctionContract.networks[networkId].address
   );
+
+  const bidAmount = await auctionContract.methods.ethAmountSent.call().call();
+  const bidder = await auctionContract.methods.newBid.bidder().call();
+
+  let bid = Web3.utils.fromWei(bidAmount, 'wei');
+  // if (bid < auction['tempAmount']) {
+  //   console.log('Bid has to be at least ' + auction['tempAmount'], 'error');
+  //   return;
+  // }
 
   return auctionContract.methods
     .bidOnAuction(auctions[auctionId])
