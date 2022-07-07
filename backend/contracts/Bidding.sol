@@ -13,8 +13,7 @@ contract Bidding  {
     uint auctionId;
     
     struct Bid {
-        uint256 value;
-        address bidder;
+        uint value;
     }
     mapping (address => Bid[]) private _bids;
 
@@ -71,15 +70,11 @@ contract Bidding  {
         // isActive = _isActive;
     }
 
-function placeBid() public payable returns(uint256[] memory values,  address[] memory bidders){
-        uint256 count = myBidsCount();
-        values = new uint256[](count);
-        bidders = new address[](count);
+function placeBid() public payable {
+        // uint256 count = myBidsCount();
+        // values = new uint256[](count);
+        // bidders = new address[](count);
 
-        for (uint256 i = 0; i < count; i++) {
-
-            bidCount++;
-                // check if the auction is still going
             if (block.timestamp > auctionDuration) {
                 revert("The acution has already ended"); // revert is neded to stop the function(same as required)
             }
@@ -102,18 +97,53 @@ function placeBid() public payable returns(uint256[] memory values,  address[] m
                 pendingReturns[highestBidder] += highestBid;
             }
 
+          Bid memory bid = Bid({
+            value: msg.value
+        });
+        _bids[msg.sender].push(bid);
+       
+        bidCount++;
+       
+        emit HighestBidIncrease(msg.sender, msg.value);
 
-            Bid storage bid = _bids[msg.sender][i];
-            values[i] = bid.value;
-            bidders[i] = bid.bidder;
+        // for (uint256 i = 0; i < count; i++) {
 
-            highestBidder = msg.sender;
-            highestBid = msg.value;
+        //     bidCount++;
+        //         // check if the auction is still going
+        //     if (block.timestamp > auctionDuration) {
+        //         revert("The acution has already ended"); // revert is neded to stop the function(same as required)
+        //     }
+        //     // check if the bidding is higher than the start price
+        //     if (msg.value <= startPrice ){
+        //         revert("This bidding is bellow the start price");
+        //     }
+        //     // check if the bidding is higher than before
+        //     if (msg.value <= highestBid ){
+        //         revert("There is already higher bid");
+        //     }
 
-            //calling event
-            emit HighestBidIncrease(msg.sender, msg.value);
-        }
-        return (values,  bidders);
+        //     // the owner can't join the bidding
+        //     if (msg.sender == assetOwner){
+        //         revert("you can't join the bidding");
+        //     }
+
+        //     //funds mapping so the user can get his money back when he lost
+        //     if (highestBid != 0){
+        //         pendingReturns[highestBidder] += highestBid;
+        //     }
+
+
+        //     Bid storage bid = _bids[msg.sender][i];
+        //     values[i] = bid.value;
+        //     bidders[i] = bid.bidder;
+
+        //     highestBidder = msg.sender;
+        //     highestBid = msg.value;
+
+        //     //calling event
+        //     emit HighestBidIncrease(msg.sender, msg.value);
+        // }
+        // return (values,  bidders);
      
     }
 

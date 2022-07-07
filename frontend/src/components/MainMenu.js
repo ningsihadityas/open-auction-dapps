@@ -17,37 +17,97 @@ import { Link } from 'react-router-dom';
 import { useRef } from 'react';
 import { placeBid } from './Web3Client';
 
-export default function MainMenu({ addr, bidder }) {
+export default function MainMenu({ bidding }) {
   //   let [productData, setProductData] = useState([]);
   let [auctionData, setAuctionData] = useState([]);
   let [bidData, setBidData] = useState([]);
   let [transactionData, setTransactionData] = useState({});
   const [showAlertSuccess, setShowAlertSuccess] = useState(false);
 
-  const [bidAmounts, setBidAmounts] = useState(null); //userDonations
-  const [web3, setWeb3] = useState(null);
-  const [contract, setContract] = useState(null);
-  const [accounts, setAccounts] = useState(null);
-  const [assetName, setAssetName] = useState(null);
-  const [assetDetail, setAssetDetail] = useState(null);
-  const [startPrice, setStartPrice] = useState(null);
+  const [bidAmounts, setBidAmounts] = useState(); //userDonations
+  const [web3, setWeb3] = useState();
+  const [contract, setContract] = useState();
+  const [accounts, setAccounts] = useState();
+  let [assetName, setAssetName] = useState();
+  let [assetDetail, setAssetDetail] = useState();
+  const [startPrice, setStartPrice] = useState();
   // const [bidder, setBidder] = useState(null);
-  const [auctionDuration, setAuctionDuration] = useState(null);
-  const [bidCount, setBidCount] = useState(null);
-  const [biddingAmount, setBiddingAmount] = useState(null); //donationAmount
-
+  const [auctionDuration, setAuctionDuration] = useState();
+  const [bidCount, setBidCount] = useState();
+  const [biddingAmount, setBiddingAmount] = useState(); //donationAmount
+  // const ethAmount = (biddingAmount / exchangeRate || 0).toFixed(4);
   async function getListingData() {
     let auctions = await getAuctionData();
     let reversed = auctions.reverse();
-    let bids = await getBidData();
+    // let bids = await getBidData();
 
     setAuctionData(reversed);
-    setBidData();
+    // setBidData();
   }
 
+  // useEffect(() => {
+
+  //   if (bidding) {
+  //     init(bidding);
+  //   }
+  // }, [bidding]);
+
+  const init = async (bidding) => {
+    try {
+      const fund = bidding;
+      let provider = window.ethereum;
+      const web3 = new Web3(provider);
+      const networkId = await web3.eth.net.getId();
+      const deployedNetwork = BiddingContract.networks[networkId];
+      const accounts = await web3.eth.getAccounts();
+      const instance = new web3.eth.Contract(BiddingContract.abi, fund);
+      setWeb3(web3);
+      setContract(instance);
+      setAccounts(accounts);
+
+      let name = await instance.methods.assetName().call();
+      let description = await instance.methods.assetDetail().call();
+      let price = await instance.methods.startPrice().call();
+      let duration = await instance.methods.auctionDuration().call();
+
+      setAssetName(name);
+      setAssetDetail(description);
+      console.log(assetDetail);
+      console.log(description);
+      // setStartPrice(web3.utils.fromWei(price, 'ether'));
+      setStartPrice(price);
+      setAuctionDuration(duration);
+
+      // var exchangeRate = 0;
+      // await cc
+      //   .price('ETH', ['USD'])
+      //   .then((prices) => {
+      //     exchangeRate = prices.USD;
+      //     setExchangeRate(prices.USD);
+      //   })
+      //   .catch(console.error);
+    } catch (error) {
+      alert(
+        `Failed to load web3, accounts, or contract. Check console for details.`
+      );
+      console.error(error);
+    }
+  };
+
   useEffect(() => {
-    getListingData(); // getTableData
-  }, []);
+    getListingData();
+    console.log(auctionData);
+
+    if (bidding) {
+      init(bidding);
+    }
+    console.log('bidding ' + assetName);
+  }, [bidding]);
+
+  // useEffect(() => {
+  //   getListingData(); // getTableData
+  //   init(bidding);
+  // }, []);
 
   // const placeBid = async () => {
   //   let provider = window.ethereum;
@@ -82,27 +142,34 @@ export default function MainMenu({ addr, bidder }) {
   //       return err.message;
   //     });
   // };
-  let bidAmount = useRef();
 
-  async function handleSubmit(bidder) {
-    const amountBid = bidAmount.current.value;
-    //const amountBid2 = Web3.utils.toWei(amountBid.toString(), 'ether');
+  window.ethereum.on('accountsChanged', function (accounts) {
+    window.location.reload();
+  });
 
-    let bidData = await placeBid()
-      .then({
-        from: bidder,
-        value: amountBid,
-        to: auctionData.bidding,
-      })
-      .catch((err) => {
-        if (err) {
-          // alert(err);
-          console.log(err);
-          // window.location.reload();
-        }
-      });
-    return bidData;
-  }
+  // let bidAmount = useRef();
+
+  //HANDLE SUBMIT
+  // async function handleSubmit(bidder) {
+  //   const amountBid = bidAmount.current.value;
+  //   //const amountBid2 = Web3.utils.toWei(amountBid.toString(), 'ether');
+
+  //   let bidData = await placeBid()
+  //     .then({
+  //       from: bidder,
+  //       value: amountBid,
+  //       to: auctionData.bidding,
+  //     })
+  //     .catch((err) => {
+  //       if (err) {
+  //         // alert(err);
+  //         console.log(err);
+  //         // window.location.reload();
+  //       }
+  //     });
+  //   return bidData;
+  // }
+
   // const AuctionCard = ({ bidding }) => {
   //   const [web3, setWeb3] = useState(null);
   //   const [contract, setContract] = useState(null);
@@ -125,80 +192,51 @@ export default function MainMenu({ addr, bidder }) {
   //     }
   //   }, [bidding]);
 
-  const init = async (bidding) => {
-    try {
-      const fund = bidding;
-      const provider = window.ethereum;
-      const web3 = new Web3(provider);
-      const networkId = await web3.eth.net.getId();
-      const deployedNetwork = BiddingContract.networks[networkId];
-      const accounts = await web3.eth.getAccounts();
-      const instance = new web3.eth.Contract(BiddingContract.abi, fund);
-      setWeb3(web3);
-      setContract(instance);
-      setAccounts(accounts);
-
-      const name = await instance.methods.assetName().call();
-      const description = await instance.methods.assetDetail().call();
-      const price = await instance.methods.startPrice().call();
-      const duration = await instance.methods.auctionDuration().call();
-
-      setAssetName(name);
-      setAssetDetail(description);
-      setStartPrice(web3.utils.fromWei(price, 'ether'));
-      setAuctionDuration(duration);
-    } catch (error) {
-      alert(
-        `Failed to load web3, accounts, or contract. Check console for details.`
-      );
-      console.error(error);
-    }
-  };
   // };
 
-  const renderBidsList = () => {
-    var bids = bidAmounts;
-    if (bids === null) {
-      return null;
-    }
+  // const renderBidsList = () => {
+  //   var bids = bidAmounts;
+  //   if (bids === null) {
+  //     return null;
+  //   }
 
-    const totalBids = bids.length;
-    let bidList = [];
-    var i;
-    for (i = 0; i < totalBids; i++) {
-      const ethAmount = web3.utils.fromWei(bids.values[i], 'ether');
-      //const bidAmount = ethAmount; //*exchangeRate
-      const bidDate = bids.dates[i];
-      bidList.push({ biddingAmount: bidAmount.toFixed(2), date: bidDate });
-    }
+  //   const totalBids = bids.length;
+  //   let bidList = [];
+  //   var i;
+  //   for (i = 0; i < totalBids; i++) {
+  //     const ethAmount = web3.utils.fromWei(bids.values[i], 'ether');
+  //     //const bidAmount = ethAmount; //*exchangeRate
+  //     const bidDate = bids.dates[i];
+  //     bidList.push({ biddingAmount: bidAmount.toFixed(2), date: bidDate });
+  //   }
 
-    return bidList.map((bid) => {
-      return (
-        <div className='donation-list'>
-          <p>${bid.biddingAmount}</p>
-          <Button variant='contained' color='primary'>
-            <Link
-              className='donation-receipt-link'
-              to={{
-                pathname: '/receipts',
-                state: {
-                  fund: assetName,
-                  bid: bid.biddingAmount,
-                  date: bid.date,
-                },
-              }}>
-              Request Receipt
-            </Link>
-          </Button>
-        </div>
-      );
-    });
-  };
+  //   return bidList.map((bid) => {
+  //     return (
+  //       <div className='donation-list'>
+  //         <p>${bid.biddingAmount}</p>
+  //         <Button variant='contained' color='primary'>
+  //           <Link
+  //             className='donation-receipt-link'
+  //             to={{
+  //               pathname: '/receipts',
+  //               state: {
+  //                 fund: assetName,
+  //                 bid: bid.biddingAmount,
+  //                 date: bid.date,
+  //               },
+  //             }}>
+  //             Request Receipt
+  //           </Link>
+  //         </Button>
+  //       </div>
+  //     );
+  //   });
+  // };
 
-  console.log(auctionData);
-  console.log(biddingAmount);
-  console.log(bidData);
-  console.log(bidAmount);
+  // console.log(auctionData);
+  // console.log(biddingAmount);
+  // console.log(bidData);
+  // console.log(bidAmount);
 
   return (
     <Container
@@ -217,45 +255,41 @@ export default function MainMenu({ addr, bidder }) {
       />
 
       <Row style={{ padding: '10px' }}>
-        {auctionData.map((item) => {
-          return (
-            <Col style={{ padding: '10px' }}>
-              <Card
-                style={{ backgroundColor: '#F6F6FE', color: 'black' }}
-                key={item.auctionId}>
-                <Card.Header as='h5'>{item.assetName}</Card.Header>
-                <Card.Body>
-                  <Card.Text>Description: {item.assetDetail}</Card.Text>
-                  <Card.Text>Asset Owner: {item.assetOwner}</Card.Text>
-                  <Card.Text>Start Price: {item.startPrice}</Card.Text>
-                  <Card.Text>
-                    Auction Duration: {item.auctionDuration}
-                  </Card.Text>
-                  <Stack
-                    direction='horizontal'
-                    gap={3}
-                    style={{
-                      paddingTop: '5px',
-                      paddingBottom: '30px',
-                    }}>
-                    <Form.Control
-                      type='number'
-                      className='me-auto'
-                      placeholder='Place Your Bid'
-                      ref={bidAmount}
-                    />
-                    <Button
-                      onClick={() => handleSubmit(bidder)}
-                      variant='warning'>
-                      Bid
-                    </Button>
-                  </Stack>
-                  <Stack direction='horizontal' gap={3}>
-                    <Button variant='danger'>Finalize Auction</Button>
-                    <div className='vr' />
-                    <Button variant='outline-danger'>Withdraw</Button>
-                  </Stack>
-                  {/* {bidData.map((index) => {
+        {/* {auctionData.map((item) => { */}
+        return (
+        <Col style={{ padding: '10px' }}>
+          <Card style={{ backgroundColor: '#F6F6FE', color: 'black' }}>
+            <Card.Header as='h5'>{assetName}</Card.Header>
+            <Card.Body>
+              <Card.Text>Description: {assetDetail}</Card.Text>
+              {/* <Card.Text>Asset Owner: {item.assetOwner}</Card.Text> */}
+              <Card.Text>Start Price: {startPrice}</Card.Text>
+              <Card.Text>Auction Duration: {auctionDuration}</Card.Text>
+              <Stack
+                direction='horizontal'
+                gap={3}
+                style={{
+                  paddingTop: '5px',
+                  paddingBottom: '30px',
+                }}>
+                <Form.Control
+                  type='number'
+                  className='me-auto'
+                  placeholder='Place Your Bid'
+                  onChange={() => {}}
+                />
+                <Button
+                  // onClick={() => handleSubmit(bidder)}
+                  variant='warning'>
+                  Bid
+                </Button>
+              </Stack>
+              <Stack direction='horizontal' gap={3}>
+                <Button variant='danger'>Finalize Auction</Button>
+                <div className='vr' />
+                <Button variant='outline-danger'>Withdraw</Button>
+              </Stack>
+              {/* {bidData.map((index) => {
                     return (
                       <col>
                         <Stack
@@ -286,23 +320,22 @@ export default function MainMenu({ addr, bidder }) {
                     );
                   })} */}
 
-                  {/* <Button variant='primary'>Go somewhere</Button> */}
-                  {/* <Button
+              {/* <Button variant='primary'>Go somewhere</Button> */}
+              {/* <Button
                     variant='primary'
                     type='submit'
                     onClick={() => handleAddAuction(assetOwner)}>
                     Add Asset
                   </Button> */}
-                </Card.Body>
-              </Card>
+            </Card.Body>
+          </Card>
 
-              <div>
+          {/* <div>
                 <h3>My donations</h3>
                 {renderBidsList()}
-              </div>
-            </Col>
-          );
-        })}
+              </div> */}
+        </Col>
+        );
       </Row>
     </Container>
   );
