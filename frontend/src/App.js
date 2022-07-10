@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import { init } from './components/Web3Client';
 import MainMenu from './components/MainMenu';
 import Home from './components/home';
+import { useEffect } from 'react';
+import Web3 from 'web3';
+import MainAuction from 'contracts/MainAuction.json';
 
 function App() {
   let [AddressEth, setAddressEth] = useState('loading...');
@@ -12,6 +15,10 @@ function App() {
   };
 
   web3Handler();
+
+  useEffect(() => {
+    init();
+  }, []);
 
   return (
     <div className='App'>
