@@ -1,0 +1,34 @@
+[
+  {
+    "id": 0,
+    "name": "The Alchemist Book",
+    "description": "Paulo Coelho's masterpiece tells the mystical story of Santiago, an Andalusian shepherd boy who yearns to travel in search of a worldly treasure.",
+    "original_price": "1",
+    "auctionDuration": "60",
+    "shippingDetail": ""
+  },
+  {
+    "id": 1,
+    "name": "Nike Shoes Air Jordan 1 : Prototype Game-worn",
+    "description": "This AJ1 shoe is an early prototype from Nike for Michael Jordan to wear during basketball games. The term is 'The Mother of The Jordan Shoes'.",
+    "original_price": "2",
+    "auctionDuration": "3",
+    "shippingDetail": ""
+  },
+  {
+    "id": 2,
+    "name": "The Comfort Book by Matt Haig",
+    "description": "The new uplifting book from Matt Haig, the New York Times bestselling author of The Midnight Library, for anyone in search of hope, looking for a path to a more meaningful life, or in need of a little encouragement.",
+    "original_price": "3",
+    "auctionDuration": "5",
+    "shippingDetail": ""
+  },
+  {
+    "id": 3,
+    "name": "Air Jordan 1 : Shattered Backboard",
+    "description": "shoes worn by Michael Jordan in a friendly match hosted by Nike. These shoes were used in a moment that was both shocking and amazing when MJ did a slam dunk hard enough to break the backboard ring. These shoes become memories for unforgettable moments for every basketball fan who witnessed at the time.",
+    "original_price": "5",
+    "auctionDuration": "10",
+    "shippingDetail": ""
+  }
+]

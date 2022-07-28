@@ -1,6 +1,6 @@
 # E-Auction Decentralized Website
 
-This project is build with Solidity (Ethereum Blockchain) to create the smart contract as a backend and React as a frontend.
+This project is build with Solidity (Ethereum Blockchain) to create the smart contract as a backend and html+js as a frontend.
 
 More about this project will be added after this project is completed .. (still loading)
 
@@ -8,9 +8,9 @@ More about this project will be added after this project is completed .. (still 
 
 In the project directory, you can run:
 
-### `npm install` in frontend & backend
+### `npm install`
 
-### `npm start` in the frontend
+### `npm start`
 
 Runs the app in the development mode.\
 Open [http://localhost:3000](http://localhost:3000) to view it in your browser.

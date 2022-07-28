@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang ="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>E-Auction DApp Web-Based</title>
+
+    <!-- Bootstrap -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/custom.css" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <script src="https://kit.fontawesome.com/16cdf6d73b.js" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    
+  </head>
+  <body class="b">
+    <div>
+      <div class="jumbotron feature ">
+        <div class="container">
+          <h1>E-Auction DApp Web-Based</h1>
+          <button class="btn btn-dark ml-auto mr-1 account-button">Your Wallet Address: <span  id="account"></span></button>       
+        </div>
+      </div>
+      <div class="container">
+        <div id="auctionRow" class="row justify-content">
+          <!--Auction Cards loads here-->
+        </div>
+      </div>
+    </div>
+    <div id="auctionTemplate" style="display: none;"> 
+      <div class="col-sm-6  mb-4">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title auction-name">Panel title</h5>
+            <h6 class="card-subtitle mb-2 text-muted base-price">Panel subtitle</h6>
+            <p class="card-text auction-description">Some quick example text to build on the panel title and make up the bulk of the panel's content.</p>
+            <p class="card-text">
+              <strong>Highest Bid Amount (in ETH): </strong><span class="highest-bid"></span></p>
+              <strong>Highest Bidder: </strong><span class="highest-bidder"></span></p>
+              <strong>Auction Duration: </strong><span class="auction-duration"></span> minutes</p>
+              <form>
+                <div class="form-row align-items-center">
+                  <div class="col-auto">
+                    <input type="number" class="form-control input-amount" placeholder="Bid Amount (in ETH)" min="0.00" name="bid" oninput="App.handleInputChanges(this.id, this.value)">
+                  </div>
+                  <div class="col-auto">
+                    <button type="button" class="btn btn-dark btn-submit" disabled=true >Submit Bid</button>
+                    <button class="btn btn-warning btn-withdraw" disable=true >Withdraw</button>
+                  </div>
+                </div>
+              </form>
+              <br>
+              <form>
+                <div class="form-row align-items-center">
+                  <div class="col-auto">
+                    
+                    <input type="text" class="form-control input-shipping-detail" placeholder="Shipping Detail" name="shippingDetail" >
+                  </div>
+                  <div class="col-auto">
+                    <button type="text" class="btn btn-dark btn-shipping-detail" disable=false >Submit</button>
+                  </div>
+                </div>
+              </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/web3.min.js"></script>
+    <script src="js/truffle-contract.js"></script>
+    <script src="js/app.js"></script>
+  </body>
+</html>
